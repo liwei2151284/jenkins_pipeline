@@ -58,7 +58,7 @@ node {
     }
     
     stage('test deploy'){
-        parallel (
+        parallel(
 		'test env1':  {
 		    echo 'deploy test_env1'
 		    //node('node1'){
