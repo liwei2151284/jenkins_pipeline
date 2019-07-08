@@ -60,14 +60,14 @@ node {
     stage('test deploy'){
         parallel(
 		'test env1':  {
-		    echo 'deploy test_env1'
+		    sh "echo 'deploy test_env1'"
 		    //node('node1'){
 		    //    def dir = new File("/test/workspace/")
 		    //    deleteDir(dir)
 		    //}
 		},
 		'test env2':  {
-		    echo 'deploy test_env1'
+		    sh "echo 'deploy test_env1'"
 		    //node('node2'){
 		    //    def dir = new File("/test/home/workspace/")
 		    //    deleteDir(dir)
