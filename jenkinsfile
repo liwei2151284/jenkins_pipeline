@@ -66,12 +66,15 @@ node {
     	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
     	sh "echo $getSonarIssuesCmd"
     	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
-    
+    	sh "echo 'aaa'"
     	//增加sonar扫描结果到artifactory
     	def jsonSlurper = new JsonSlurper()
     	def issueMap = jsonSlurper.parseText(process);
+	sh "echo 'bbb'"
     	commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.$BUILD_NUMBER/multi3-1.0.$BUILD_NUMBER.war?properties=qulity.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME};qulity.gate.sonarIssue="+issueMap.total+"\" -uadmin:$arti_api_key";
-    	process = [ 'bash', '-c', commandText].execute().text
+    	sh "echo 'ccc'"
+	process = [ 'bash', '-c', commandText].execute().text
+	sh "echo 'ddd'"
 	
 	
 
