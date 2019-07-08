@@ -73,11 +73,11 @@ node {
           //Mandatory parameters
           'buildName'          : buildInfo.name,
           'buildNumber'        : buildInfo.number,
-          'targetRepo'         : 'jenkins_pipeline_webinar_stage_local',
+          'targetRepo'         : 'jenkins_pipeline_webinar_release_local',
     
           //Optional parameters
           'comment'            : 'this is the promotion comment',
-          'sourceRepo'         : 'jenkins_pipeline_webinar_snapshot_local',
+          'sourceRepo'         : 'jenkins_pipeline_webinar_stage_local',
           'status'             : 'Released',
           'includeDependencies': true,
           'failFast'           : true,
