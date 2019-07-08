@@ -60,7 +60,7 @@ node {
     stage('sonar result post'){
     	//获取artifactory的apikey
     	withCredentials([string(credentialsId: 'Artifactory_api_key', variable: 'aa')]) {
-	    //def arti_api_key = ${aa}
+	    def arti_api_key = $"{aa}"
 	}
 	//获取sonar扫描结果
     	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
@@ -70,7 +70,7 @@ node {
     	//增加sonar扫描结果到artifactory
     	def jsonSlurper = new JsonSlurper()
     	def issueMap = jsonSlurper.parseText(process);
-    	commandText = 'curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.$BUILD_NIUMBER/multi3-1.0.$BUILD_NIUMBER.war?properties=qulity.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME};qulity.gate.sonarIssue="+issueMap.total+"\" -uadmin:$"{aa}"';
+    	commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.$BUILD_NIUMBER/multi3-1.0.$BUILD_NIUMBER.war?properties=qulity.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME};qulity.gate.sonarIssue="+issueMap.total+"\" -uadmin:$arti_api_key";
     	echo commandText
     	process = [ 'bash', '-c', commandText].execute().text
 	
