@@ -23,6 +23,10 @@ node {
         git url: 'https://github.com/liwei2151284/project-examples.git'
     }
 
+    stage('change version tag'){
+    	sh 'sed -i "s/version_tag_for_build/1.0.$BUILD_NUMBER/g/" ./maven-examples/pom.xml'
+    }
+
     stage ('Artifactory configuration') {
         rtMaven.tool = 'maven' // Tool name from Jenkins configuration
         rtMaven.deployer releaseRepo: 'jenkins_pipeline_webinar_stage_local', snapshotRepo: 'jenkins_pipeline_webinar_snapshot_local', server: artiServer
