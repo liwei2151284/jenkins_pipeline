@@ -79,7 +79,7 @@ node {
           'comment'            : 'this is the promotion comment',
           'sourceRepo'         : 'jenkins_pipeline_webinar_stage_local',
           'status'             : 'Released',
-          'includeDependencies': true,
+          'includeDependencies': false,
           'failFast'           : true,
           'copy'               : true
       ]
