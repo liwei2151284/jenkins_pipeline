@@ -2,6 +2,7 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 def env = "${env.env}"
+
 node {
     def artiServer
     def buildInfo
@@ -51,11 +52,11 @@ node {
     stage('sonar result post'){
     	//获取artifactory的apikey
     	withCredentials([string(credentialsId: 'Artifactory_api_key', variable: 'aa')]) {
-	    
+	    //def arti_api_key = ${aa}
 	}
 	
 	//获取最新版本号
-	def curlstr="curl -uadmin:${aa} \'http://demo.jfrogchina.com/artifactory/"
+	def curlstr='curl -uadmin:"${aa}" \'http://demo.jfrogchina.com/artifactory/'
 
 	//获取sonar扫描结果
 	def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${JOB_NAME}";
