@@ -46,6 +46,9 @@ node {
     }
     
     stage('sonar result post'){
+    	withCredentials([string(credentialsId: 'Artifactory_api_key', variable: 'aa')]) {
+	    echo "${aa}"
+	}
         
     }
     
