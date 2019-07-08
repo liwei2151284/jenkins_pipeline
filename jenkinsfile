@@ -1,3 +1,6 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
 def env = "${env.env}"
 node {
     def artiServer
