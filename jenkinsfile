@@ -24,7 +24,11 @@ node {
     }
 
     stage('change version tag'){
-    	sh 'sed -i "s/version_tag_for_build/1.0.$BUILD_NUMBER/g/" ./maven-examples/pom.xml'
+    	
+    	sh "sed -i 's/version_tag_for_build/1.0.$BUILD_NUMBER/g/' ./maven-examples/pom.xml"
+	sh "sed -i 's/version_tag_for_build/1.0.$BUILD_NUMBER/g/' ./maven-examples/multi3/pom.xml"
+	sh "sed -i 's/version_tag_for_build/1.0.$BUILD_NUMBER/g/' ./maven-examples/multi2/pom.xml"
+	sh "sed -i 's/version_tag_for_build/1.0.$BUILD_NUMBER/g/' ./maven-examples/multi1/pom.xml"
     }
 
     stage ('Artifactory configuration') {
