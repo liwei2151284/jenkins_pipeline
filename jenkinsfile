@@ -34,10 +34,7 @@ node {
     }
     
     stage('审批') {
-            input {
-                message "Should we continue?"
-                ok "Yes, we should."
-              }
+            input message: 'tongguo', ok: 'ok'
 	}
     
     stage('sonar scan'){
