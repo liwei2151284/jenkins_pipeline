@@ -33,7 +33,7 @@ node {
         artiServer.publishBuildInfo buildInfo
     }
     
-    stage('审批') {
+    stage('approve') {
             input message: 'tongguo', ok: 'ok'
 	}
     
