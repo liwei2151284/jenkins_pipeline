@@ -25,10 +25,10 @@ node {
 
     stage('change version tag'){
     	
-    	sh label: '', script: 'sed -i \'s/version_tag_for_build/1.0.$BUILD_NUMBER/g\' ./maven-examples/pom.xml'
-	sh label: '', script: 'sed -i \'s/version_tag_for_build/1.0.$BUILD_NUMBER/g\' ./maven-examples/multi1/pom.xml'
-	sh label: '', script: 'sed -i \'s/version_tag_for_build/1.0.$BUILD_NUMBER/g\' ./maven-examples/multi2/pom.xml'
-	sh label: '', script: 'sed -i \'s/version_tag_for_build/1.0.$BUILD_NUMBER/g\' ./maven-examples/multi3/pom.xml'
+    	sh label: '', script: 'sed -i \'s/version_tag_for_build/1.0.$BUILD_NUMBER/g\' ./maven-example/pom.xml'
+	sh label: '', script: 'sed -i \'s/version_tag_for_build/1.0.$BUILD_NUMBER/g\' ./maven-example/multi1/pom.xml'
+	sh label: '', script: 'sed -i \'s/version_tag_for_build/1.0.$BUILD_NUMBER/g\' ./maven-example/multi2/pom.xml'
+	sh label: '', script: 'sed -i \'s/version_tag_for_build/1.0.$BUILD_NUMBER/g\' ./maven-example/multi3/pom.xml'
     }
 
     stage ('Artifactory configuration') {
