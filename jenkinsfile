@@ -60,7 +60,7 @@ node {
     stage('sonar result post'){
     	//获取artifactory的apikey
     	withCredentials([string(credentialsId: 'Artifactory_api_key', variable: 'aa')]) {
-	    def arti_api_key = $aa
+	    def arti_api_key = "${aa}"
 	}
 	//获取sonar扫描结果
     	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
