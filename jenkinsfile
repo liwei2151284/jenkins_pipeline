@@ -67,6 +67,7 @@ node {
     	sh "echo $getSonarIssuesCmd"
     	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
     	sh "echo 'aaa'"
+	sh "echo $process"
     	//增加sonar扫描结果到artifactory
     	def jsonSlurper = new JsonSlurper()
     	def issueMap = jsonSlurper.parseText(process);
