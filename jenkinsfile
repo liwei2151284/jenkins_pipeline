@@ -55,19 +55,7 @@ node {
 	    //def arti_api_key = ${aa}
 	}
 	
-	//获取最新版本号
-	//def curlstr='curl -uadmin:"${aa}" \'http://demo.jfrogchina.com/artifactory/'
-
-	//获取sonar扫描结果
-	def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${JOB_NAME}";
-	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
-
-	//增加sonar扫描结果到artifactory
-	def jsonSlurper = new JsonSlurper()
-	def issueMap = jsonSlurper.parseText(process);
-	commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/libs-stage-local/org/wangqing/sample-spring-microservices/account-service/"+artifactVersion+"/account-service-"+artifactVersion+".jar?properties=quality.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME};quality.gate.sonarIssue="+issueMap.total+"\" -uadmin:$'{aa}'";
-
-	echo commandText
+	
 
     }
     
