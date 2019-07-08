@@ -8,6 +8,8 @@ node {
     def buildInfo
     def rtMaven
     
+    def arti_api_key
+    
     def SONAR_SOURCES = 'maven-example/'
     def SONAR_HOST_URL = 'http://47.93.114.82:9000/'
     def SONAR_PROJECT_KEY = "${JOB_NAME}"
@@ -60,7 +62,7 @@ node {
     stage('sonar result post'){
     	//获取artifactory的apikey
     	withCredentials([string(credentialsId: 'Artifactory_api_key', variable: 'aa')]) {
-	    def arti_api_key = "${aa}"
+	    arti_api_key = "${aa}"
 	}
 	//获取sonar扫描结果
     	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
