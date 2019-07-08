@@ -72,7 +72,7 @@ node {
 		    //    def dir = new File("/test/home/workspace/")
 		    //    deleteDir(dir)
 		    //}
-		},
+		}
 	)
     }
     
