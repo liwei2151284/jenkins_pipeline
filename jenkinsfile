@@ -70,7 +70,7 @@ node {
     	sh "echo $getSonarIssuesCmd"
 
 	//获取sonar扫描issue数量结果
-    	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}_${BUILD_NUMBER}";
+    	//def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}_${BUILD_NUMBER}";
     	sh 'echo $getSonarIssuesCmd'
 	process_issue = [ 'bash', '-c', getSonarIssuesCmd].execute().text
 	sh 'echo $process_issue'
