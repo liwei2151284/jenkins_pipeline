@@ -75,7 +75,7 @@ node {
 	//sh 'echo $process_metric'
     	//分析sonar扫描结果
     	def jsonSlurper = new JsonSlurper()
-    	def issueMap = jsonSlurper.parseText("{"+process_issue+"}");
+    	def issueMap = jsonSlurper.parseText(process_issue);
 	def issueTotal = issueMap.total
 	sh "echo ${issueTotal}"
 	//def metricMap = jsonSlurper.parseText(process_metric);
