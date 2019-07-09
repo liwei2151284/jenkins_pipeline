@@ -76,8 +76,10 @@ node {
     	//分析sonar扫描结果
 	sh "echo 'fff'"
         def jsonSlurper = new JsonSlurper()
+	sleep 5
 	sh "echo 'aaa'"
         def issueMap = jsonSlurper.parseText(process_issue)
+	sleep 5
 	sh "echo 'bbb'"
 	def issueTotal = issueMap.total;
 	sh "echo 'ccc'"
