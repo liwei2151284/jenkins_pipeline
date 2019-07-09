@@ -68,20 +68,11 @@ node {
     	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
     	sh "echo $getSonarIssuesCmd"
     	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
-    	sh "echo 'aaa'"
-	sh "echo $process"
     	//增加sonar扫描结果到artifactory
     	//def jsonSlurper = new JsonSlurper()
     	//def issueMap = jsonSlurper.parseText(process);
-	sh "echo 'bbb'"
-    	//commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.${BUILD_NUMBER}/multi3-1.0.${BUILD_NUMBER}.war?properties=qulity.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME} -uadmin:$arti_api_key";
 	commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.${BUILD_NUMBER}/multi3-1.0.${BUILD_NUMBER}.war?properties=qulity.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME}\" -uadmin:$arti_api_key";
-
-    	sh "echo 'ccc'"
 	process = [ 'bash', '-c', commandText].execute().text
-	sh "echo 'ddd'"
-	
-	
 
     }
     
@@ -91,26 +82,6 @@ node {
     
     stage('xray result post'){
         echo "${env}"
-    }
-    
-    stage('promotion_snapshot'){
-      echo "promotion"
-      def promotionConfig = [
-          //Mandatory parameters
-          'buildName'          : buildInfo.name,
-          'buildNumber'        : buildInfo.number,
-          'targetRepo'         : 'jenkins_pipeline_webinar_release_local',
-    
-          //Optional parameters
-          'comment'            : 'this is the promotion comment',
-          'sourceRepo'         : 'jenkins_pipeline_webinar_stage_local',
-          'status'             : 'Released',
-          'includeDependencies': false,
-          'failFast'           : true,
-          'copy'               : true
-      ]
-      // Promote build
-      artiServer.promote promotionConfig
     }
     
     stage('test deploy'){
@@ -140,9 +111,28 @@ node {
         
     }
     
-    stage('promotion'){
-        
+    stage('promotion_snapshot'){
+      echo "promotion"
+      def promotionConfig = [
+          //Mandatory parameters
+          'buildName'          : buildInfo.name,
+          'buildNumber'        : buildInfo.number,
+          'targetRepo'         : 'jenkins_pipeline_webinar_release_local',
+    
+          //Optional parameters
+          'comment'            : 'this is the promotion comment',
+          'sourceRepo'         : 'jenkins_pipeline_webinar_stage_local',
+          'status'             : 'Released',
+          'includeDependencies': false,
+          'failFast'           : true,
+          'copy'               : true
+      ]
+      // Promote build
+      artiServer.promote promotionConfig
     }
+    
+
+    
     
     stage('deploy'){
         
