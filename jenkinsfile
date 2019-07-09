@@ -67,9 +67,7 @@ node {
 	sleep 10
 	//获取sonar扫描issue数量结果
 	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}_${BUILD_NUMBER}";
-    	sh "echo $getSonarIssuesCmd"
 	process_issue = [ 'bash', '-c', getSonarIssuesCmd].execute().text
-    	sh "echo $process_issue"
 	//获取sonar扫描度量结果
 	//def getSonarMetricCmd = "curl  GET -v ${SONAR_HOST_URL}/api/measures/component?componentKey=${SONAR_PROJECT_KEY}_${BUILD_NUMBER}&metricKeys=ncloc,complexity,violations&additionalFields=metrics,periods";
     	//process_metric = [ 'bash', '-c', getSonarMetricCmd].execute().text
@@ -77,8 +75,9 @@ node {
 	//sh 'echo $process_metric'
     	//分析sonar扫描结果
     	def jsonSlurper = new JsonSlurper()
-    	def issueMap = jsonSlurper.parseText(process_issue);
+    	def issueMap = jsonSlurper.parseText("{"+process_issue+"}");
 	def issueTotal = issueMap.total
+	sh "echo ${issueTotal}"
 	//def metricMap = jsonSlurper.parseText(process_metric);
 	//上传sonar扫描结果
 	sh 'echo ${issueTotal}'	
