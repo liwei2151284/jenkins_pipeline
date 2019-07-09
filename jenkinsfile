@@ -54,7 +54,7 @@ node {
         def scannerHome = tool 'sonarClient';
         withSonarQubeEnv('sonar') {
 	    sh "echo ${scannerHome}"
-            sh "${scannerHome}/bin/sonar-runner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=${SONAR_SOURCES}"
+            sh "${scannerHome}/bin/sonar-runner -Dsonar.projectKey=${SONAR_PROJECT_KEY}_${BUILD_NUMBER} -Dsonar.sources=${SONAR_SOURCES}"
         }
         
     }
@@ -68,6 +68,7 @@ node {
     	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
     	sh "echo $getSonarIssuesCmd"
     	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
+	sh "echo $process"
     	//增加sonar扫描结果到artifactory
     	//def jsonSlurper = new JsonSlurper()
     	//def issueMap = jsonSlurper.parseText(process);
