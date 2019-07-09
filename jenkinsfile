@@ -10,7 +10,7 @@ node {
     
     def arti_api_key
     
-    def SONAR_SOURCES = 'maven-example/'
+    def SONAR_SOURCES = 'maven-example/multi3/'
     def SONAR_HOST_URL = 'http://47.93.114.82:9000/'
     def SONAR_PROJECT_KEY = "${JOB_NAME}"
     
