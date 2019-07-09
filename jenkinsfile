@@ -1,8 +1,5 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-
-def env = "${env.env}"
-
 node {
     def artiServer
     def buildInfo
@@ -68,23 +65,11 @@ node {
 	//获取sonar扫描issue数量结果
 	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}_${BUILD_NUMBER}";
 	process_issue = [ 'bash', '-c', getSonarIssuesCmd].execute().text
-	//获取sonar扫描度量结果
-	//def getSonarMetricCmd = "curl  GET -v ${SONAR_HOST_URL}/api/measures/component?componentKey=${SONAR_PROJECT_KEY}_${BUILD_NUMBER}&metricKeys=ncloc,complexity,violations&additionalFields=metrics,periods";
-    	//process_metric = [ 'bash', '-c', getSonarMetricCmd].execute().text
-	//sh 'echo $getSonarIssuesCmd'
-	//sh 'echo $process_metric'
-    	//分析sonar扫描结果
-	sh "echo 'fff'"
-        def jsonSlurper = new JsonSlurper()
+        def jjsonSlurper = new JsonSlurper()
 	sleep 5
-	sh "echo 'aaa'"
-        def issueMap = jsonSlurper.parseText(process_issue)
+        def issueMap = jjsonSlurper.parseText(process_issue)
 	sleep 5
-	sh "echo 'bbb'"
 	def issueTotal = issueMap.total;
-	sh "echo 'ccc'"
-	//def metricMap = jsonSlurper.parseText(process_metric);
-	//上传sonar扫描结果
 	sh 'echo ${issueTotal}'	
 	commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.${BUILD_NUMBER}/multi3-1.0.${BUILD_NUMBER}.war?properties=qulity.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME}\" -uadmin:$arti_api_key";
 	process = [ 'bash', '-c', commandText].execute().text
@@ -96,7 +81,6 @@ node {
     }
     
     stage('xray result post'){
-        echo "${env}"
     }
     
     stage('test deploy'){
