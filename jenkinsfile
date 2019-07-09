@@ -64,6 +64,11 @@ node {
     	withCredentials([string(credentialsId: 'Artifactory_api_key', variable: 'aa')]) {
 	    arti_api_key = "${aa}"
 	}
+	
+	
+	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
+    	sh "echo $getSonarIssuesCmd"
+
 	//获取sonar扫描issue数量结果
     	def getSonarIssuesCmd = "curl  GET -v ${SONAR_HOST_URL}api/issues/search?componentRoots=${SONAR_PROJECT_KEY}_${BUILD_NUMBER}";
     	sh 'echo $getSonarIssuesCmd'
