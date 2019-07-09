@@ -60,8 +60,6 @@ node {
 		//增加sonar扫描结果到artifactory
 		def jsonSlurper = new JsonSlurper()
 		def issueMap = jsonSlurper.parseText(process);
-		def aa = "issueMap.total"
-		sh 'echo "${aa}"'
 		if(issueMap.total>10){
 			break
 		}
