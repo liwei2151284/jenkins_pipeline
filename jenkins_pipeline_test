@@ -53,13 +53,14 @@ node {
     }
     
     stage('sonar result post'){
+    		sleep 10
         	def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${JOB_NAME}";
 		process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
 
 		//增加sonar扫描结果到artifactory
 		def jsonSlurper = new JsonSlurper()
 		def issueMap = jsonSlurper.parseText(process);
-		sh "echo issueMap.total"
+		//sh "echo issueMap.total"
     }
     
     stage('xray scan'){
