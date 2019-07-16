@@ -54,7 +54,7 @@ node {
     
     stage('sonar result post'){
     		sleep 10
-        	def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${JOB_NAME}";
+        	def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
 		process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
 
 		//增加sonar扫描结果到artifactory
