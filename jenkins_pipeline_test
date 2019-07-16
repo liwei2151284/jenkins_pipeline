@@ -78,12 +78,13 @@ node {
         def xrayResults = artiServer.xrayScan xrayConfig
         def xraycmd = "echo"+ xrayResults +"as String" 
 	def xray_process = [ 'bash', '-c', xraycmd].execute().text
+	def jsonSlurper = new JsonSlurper()
+	def xrayresult = jsonSlurper.parseText(xray_process)
+    	echo xrayresult.summary.total_alerts as String 
     }
     
     stage('xray scan result post '){
-    	def jsonSlurper = new JsonSlurper()
-	def xrayresult = jsonSlurper.parseText(xray_process)
-    	echo xrayresult.summary.total_alerts as String 
+    	
     }
     
     stage('auto test'){
