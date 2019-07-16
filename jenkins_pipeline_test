@@ -76,11 +76,11 @@ node {
           'failBuild'     : false
         ]
         def xrayResults = artiServer.xrayScan xrayConfig
-        echo xrayResults as String 
+        echo xrayResults.summary.total_alerts as String 
     }
     
     stage('xray scan result post '){
-        
+    	echo xrayResults.summary.total_alerts as String 
     }
     
     stage('auto test'){
