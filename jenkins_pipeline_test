@@ -53,21 +53,30 @@ node {
     }
     
     stage('sonar result post'){
-    		sleep 10
-        	def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
-		process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
+    	sleep 10
+    	withCredentials([string(credentialsId: 'Artifactory_api_key', variable: 'aa')]) {
+	            arti_api_key = "${aa}"
+	        }
+        def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
+	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
 
-		//增加sonar扫描结果到artifactory
-		def jsonSlurper = new JsonSlurper()
-		def issueMap = jsonSlurper.parseText(process)
-		echo issueMap.total
-		if(issueMap.total>10){
-			break
-		}
+	//增加sonar扫描结果到artifactory
+	def jsonSlurper = new JsonSlurper()
+	def issueMap = jsonSlurper.parseText(process)
+	commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.${BUILD_NUMBER}/multi3-1.0.${BUILD_NUMBER}.war?properties=qulity.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME};quality.gate.sonarIssue="+issueMap.total+"\" -uadmin:$arti_api_key";
+	process = [ 'bash', '-c', commandText].execute().text
+		
+		
     }
     
     stage('xray scan'){
-        
+    	def xrayConfig = [
+          'buildName'     : env.JOB_NAME,
+          'buildNumber'   : env.BUILD_NUMBER,
+          'failBuild'     : false
+        ]
+        def xrayResults = artiServer.xrayScan xrayConfig
+        echo xrayResults as String 
     }
     
     stage('xray scan result post '){
