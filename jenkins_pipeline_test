@@ -1,7 +1,6 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-def publish_env = "${env.publish_env}"
 
 node {
     def artiServer
@@ -9,7 +8,7 @@ node {
     def rtMaven
     
     def SONAR_SOURCES = 'maven-example/multi3/'
-    def SONAR_HOST_URL = 'http://47.93.114.82:9000/'
+    def SONAR_HOST_URL = 'http://0.0.0.0:9000/'
     def SONAR_PROJECT_KEY = "${JOB_NAME}"
     
     stage('SCM'){
@@ -54,50 +53,92 @@ node {
     
     stage('sonar result post'){
     	sleep 10
+    	
     	withCredentials([string(credentialsId: 'Artifactory_api_key', variable: 'aa')]) {
 	            arti_api_key = "${aa}"
 	        }
-        def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
+    	
+    def getSonarIssuesCmd = "curl  GET -v http://47.93.114.82:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}";
 	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
-
-	//增加sonar扫描结果到artifactory
 	def jsonSlurper = new JsonSlurper()
 	def issueMap = jsonSlurper.parseText(process)
 	commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.${BUILD_NUMBER}/multi3-1.0.${BUILD_NUMBER}.war?properties=qulity.gate.sonarUrl=http://47.93.114.82:9000/dashboard/index/${JOB_NAME};quality.gate.sonarIssue="+issueMap.total+"\" -uadmin:$arti_api_key";
 	process = [ 'bash', '-c', commandText].execute().text
+
+	//增加sonar扫描结果到artifactory
+	
 		
 		
     }
     
     stage('xray scan'){
-    	def xrayConfig = [
+        def xrayConfig = [
           'buildName'     : env.JOB_NAME,
           'buildNumber'   : env.BUILD_NUMBER,
           'failBuild'     : false
         ]
         def xrayResults = artiServer.xrayScan xrayConfig
-        def xraycmd = "echo"+ xrayResults +"as String" 
-	def xray_process = [ 'bash', '-c', xraycmd].execute().text
-	def jsonSlurper = new JsonSlurper()
-	def xrayresult = jsonSlurper.parseText(xray_process)
-    	echo xrayresult.summary.total_alerts as String 
+        echo xrayResults  as String
+        
+        def jsonSlurper = new JsonSlurper()
+    	def xrayresult = jsonSlurper.parseText(xrayResults.toString())
+    	echo xrayresult.summary.total_alerts.toString()
+    	commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.${BUILD_NUMBER}/multi3-1.0.${BUILD_NUMBER}.war?properties=Xray=scand;Xray_total_alerts="+xrayresult.summary.total_alerts+"\" -uadmin:$arti_api_key";
+	    process = [ 'bash', '-c', commandText].execute().text
     }
     
-    stage('xray scan result post '){
-    	
-    }
+   
     
     stage('auto test'){
-        
+             parallel(
+    		'test env1': {
+    		    sh "echo 'deploy test_env1'"
+    		    //node('node1'){
+    		    //    def dir = new File("/test/workspace/")
+    		    //    deleteDir(dir)
+    		    //}
+    		},
+    		'test env2': {
+    		    sh "echo 'deploy test_env1'"
+    		    //node('node2'){
+    		    //    def dir = new File("/test/home/workspace/")
+    		    //    deleteDir(dir)
+    		    //}
+    		}
+    	)
+    
     }
     
-    stage('auto test result post'){
-        
+    stage('approve') {
+          input message: 'tongguo', ok: 'ok'  
+	}
+	
+	stage('test result post'){
+        commandText = "curl  -X PUT \"http://demo.jfrogchina.com/artifactory/api/storage/jenkins_pipeline_webinar_stage_local/org/jfrog/test/multi3/1.0.${BUILD_NUMBER}/multi3-1.0.${BUILD_NUMBER}.war?properties=intergration_test=passed\" -uadmin:$arti_api_key";
+	    process = [ 'bash', '-c', commandText].execute().text
     }
     
     stage('promotion'){
-        
+        echo "promotion"
+      def promotionConfig = [
+          //Mandatory parameters
+          'buildName'          : buildInfo.name,
+          'buildNumber'        : buildInfo.number,
+          'targetRepo'         : 'jenkins_pipeline_webinar_release_local',
+    
+          //Optional parameters
+          'comment'            : 'this is the promotion comment',
+          'sourceRepo'         : 'jenkins_pipeline_webinar_stage_local',
+          'status'             : 'Released',
+          'includeDependencies': false,
+          'failFast'           : true,
+          'copy'               : true
+      ]
+      // Promote build
+      artiServer.promote promotionConfig
     }
+    
+   
     
     stage('deploy'){
         
