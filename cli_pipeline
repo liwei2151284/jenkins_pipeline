@@ -1,0 +1,44 @@
+node {
+    
+    
+    stage('SCM'){
+        git 'https://gitee.com/liwei2151284/guestbook_project.git'
+        sh "sed -i \"s#BUILDNUM#${env.BUILD_NUMBER}#g\"  ./gateway-service/pom.xml"
+    }
+    
+    stage('Build') {
+        dir('.') {
+            sh "jf  mvnc --repo-resolve-releases=lwei-curation-test-mvn-remote --repo-resolve-snapshots=lwei-curation-test-mvn-remote --repo-deploy-releases=demo-mvn-staging-local --repo-deploy-snapshots=demo-mvn-staging-local --server-id-deploy=jfrogchina --server-id-resolve=jfrogchina  "
+            sh "jf  mvn clean install -f ./gateway-service/pom.xml --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}  " //-Dartifactory.publish.artifacts=false
+            sh "jf rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        }
+    }
+    
+    //stage('JIRA') {
+    //    sh "sed -i \"s#arti_serverid#jfrogchina#g\"  ./config.cfg"
+    //    sh "jf rt bag ${env.JOB_NAME} ${env.BUILD_NUMBER} ./ --config ./config.cfg"
+    //}
+    
+    stage('Publish') {
+        dir('.') {
+          sh "jf rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+          sleep 20
+        }
+    }
+
+    //扫描，--fial=false是门禁
+    stage('Scan') {
+        sh "jf rt bs ${env.JOB_NAME} ${env.BUILD_NUMBER} --fail=false"
+        sleep 20
+    }
+    
+    //stage('Deploy') {
+    //    sh "jf mvn deploy"
+    //}
+    
+    
+    //stage('Promote') {
+    //    sh "jf rt bpr ${env.JOB_NAME} ${env.BUILD_NUMBER} demo-mvn-prod-local --status=Released --comment=approved --include-dependencies=false --copy=true  --props=\"Released=approve;test=ok\""
+    //}
+
+}
